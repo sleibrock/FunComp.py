@@ -109,6 +109,43 @@ def even(x):
     """
     return bool(not x&1)
 
+# Exponentiate a number by a number
+# Curries pow(x,y)
+def expo(x):
+    """
+    expo :: Num a => a -> a -> a
+    """
+    def iexp(base):
+        return pow(base, x)
+    return iexp
+
+# Square a number (wraps pow)
+def square(x):
+    """
+    square :: Num a => a -> a
+    """
+    return pow(x,2)
+
+# Cubes a number (wraps pow)
+def cube(x):
+    """
+    cube :: Num a => a -> a
+    """
+    return pow(x,3)
+
+# Take a function with no arguments and 
+# collects the results a number of times
+def collect(amount):
+    """
+    collect :: (a) -> Int -> [a]
+    """
+    def icoll(fun):
+        res = list()
+        for x in range(amount):
+           res.append(fun())
+        return res
+    return icoll
+
 # Span a list from 0 to x
 # Usage: Unit(10) | span => [0..10]
 def span(x):
@@ -138,7 +175,6 @@ def length(x):
         return len(list([x]))
     return len(list(x))
 
-## Curried (nested) functions
 # Apply a map to the data
 # If the data isn't a list, turn it into one
 def fmap(func):
@@ -163,5 +199,34 @@ def select(func):
             return list(filter(func, [data]))
         return list(filter(func, data))
     return imap
+
+### Comparison operators (shorthand filters)
+# TODO: Shorten these using higher order functions/wraps
+def comp(comp_fun):
+    """
+    comp :: (a -> b) -> a -> [a] -> a
+    """
+    def inner1(value):
+        def inner2(data):
+            if not isinstance(data, list):
+                return list(filter(comp_fun, [data]))
+            return list(filter(comp_fun, data))
+        return inner2
+    return inner1
+
+def lt(y):
+    return comp(lambda x: x < y)(y)
+
+def lte(y):
+    return comp(lambda x: x <= y)(y)
+
+def gt(y):
+    return comp(lambda x: x > y)(y)
+
+def gte(y):
+    return comp(lambda x: x >= y)(y)
+
+def equals(y):
+    return comp(lambda x: x == y)(y)
 
 # end
