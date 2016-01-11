@@ -171,6 +171,39 @@ Unit(10) | span | drop(5)
 # => Unit([5, 6, 7, 8, 9])
 ```
 
+# Disadvantages
+
+Since we're effectively continuously passing functions 
+from one data unit to another, it makes it hard to 
+access object methods of an object within a container.
+
+Example: if we wanted to add just one value to a 
+list within a container, we can't access append 
+directly.
+
+``` python
+Unit([1,2,3] | append(4) # can't do something like this
+
+# Note that even list.append is an in-memory op 
+# So this effectively returns None
+Unit([1,2,3]) | (lambda x: x.append(4))
+# => None
+```
+
+The Unit functor does not store data between operations 
+but rather returns the results of functions that operate 
+on the data. _list.append_ doesn't return anything, 
+but instead we have to do shortcuts like:
+
+``` python
+Unit([1,2,3]) | (lambda x: x + [4]) # works but ugly
+```
+
+The point of this library is to inspire more 
+functional use of Python rather than imperative, OO-style 
+code. Accessing an object's methods is not actually 
+something to be aimed for currently with this library.
+
 # Notes
 
 Check the Makefile for a quick shell launch option 
@@ -185,7 +218,7 @@ so that one can act as an "If" conditional)
 
 ``` python
 Unit(4) | succ | neg | True
-# => 4 
+# => -5
 
 Unit(4) | False
 # => None
