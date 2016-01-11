@@ -1,4 +1,4 @@
 shell:
-	python -i -m chain.Unit 
+	python -i Functor/shell.py 
 test:
-	python chain/test.py
+	python Functor/test.py

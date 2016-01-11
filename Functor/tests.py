@@ -5,7 +5,7 @@ import math
 
 # Test if the package isn't broken locally
 try:
-    from chain import *
+    from Functor import *
 except ImportError:
     print("Couldn't find the chain package")
     quit()

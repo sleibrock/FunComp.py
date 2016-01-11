@@ -86,24 +86,5 @@ class Unit(object):
     def __eq__(self,other):
         return self.acc == other.acc
 
-# This essentially returns the entire Unit container
-def id(*x):
-    if len(x) > 1:
-        return x
-    else:
-        return x[0]
-
-## Functions that will only work on Numbers
-# Successor of a value (increment on Int)
-def succ(x):
-    return x + 1
-
-# Predecessor of a value (decrement on Int)
-def pred(x):
-    return x - 1
-
-# Negate a value (Unit(5) | negate => -5)
-def neg(x):
-    return (-x)
 
 # end

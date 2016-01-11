@@ -1,4 +1,4 @@
-chain.py
+Functor.py
 ========
 
 Quick and dirty object chaining with some 
@@ -20,10 +20,10 @@ nest them together to get a computation? Let's say
 you had these functions.
 
 ``` python
-def f(x): ...
-def g(x): ...
-def h(x): ...
-def i(x): ...
+def f(x): # do some computation
+def g(x): # do another one
+def h(x): # etc
+def i(x): # ...
 ```
 You wanted to nest these in a way that you got one 
 final computation, so here's what you'd do in 
@@ -45,6 +45,54 @@ Unit(x) | f | g | h | i # and so on...
 This creates a much nicer looking function 
 composition that can easily be modified and 
 extended upon without much confusion.
+
+# What the heck's a Functor?
+
+A Functor is a special data type that follows this rule:
+```
+fmap :: (a -> b) -> f a -> f b
+```
+
+It takes in a function that has a type of (a -> b), 
+applies the function to a Functor with a type of A, 
+applies it to the A, and turns it into a Functor with a 
+type of B.
+
+In Haskell we can write quick expressions that allow 
+us to manipulate special data types like Maybe or List.
+
+``` haskell
+Prelude> (+1) <$> [1..10]
+[2,3,4,5,6,7,8,9,10,11]
+```
+
+This applies a (+1) function across the List Functor 
+containing all numbers between 1 and 10.
+
+Python doesn't have the same magic rules as Functors and 
+the like, but the idea of Functors is what strongly 
+influenced this project. Strictly speaking, this isn't 
+exactly a "true" Functor unit in Python, but something 
+inspired by it.
+
+# Requirements 
+
+Python 3 is the optimal choice, as it changes 
+most functions to produce generators as opposed to 
+raw lists. Python 2 can still be used, but it 
+has some drawbacks:
+
+* _print_ is not a function, it's a keyword
+* _map()_ and _filter()_ return lists
+* Unicode issues
+* Everything else wrong with Python 2
+
+The code will try it's best to work across 
+different versions, but will be buggy.
+
+# Install
+
+Now's not the time for install; that comes later.
 
 # Examples
 
@@ -70,6 +118,57 @@ Unit(4,3) | (lambda x,y: x*y)
 ``` python
 Unit(succ, range(10)) | map | list
 # => Unit([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+```
+
+## Mapping and Filtering
+
+For this we have to note that our function chaining 
+works really well for functions with consistent 
+amounts of arguments (1 value to 1-arg, 2 values to 2-arg, 
+etc.), but what if we had 1 value and we wanted to 
+apply it to a function that took 2?
+
+In the above example for mapping
+``` python
+Unit(succ, range(10)) | map | list
+```
+Our Unit stores two values, _succ_ and _range(10)_. 
+_map()_ takes two values so this is a natural application. 
+
+If we wanted to a map/filter combination, the code 
+gets messy real fast because _map()_ only returns 
+one value. So we would *have* to nest Unit expressions 
+like so.
+
+``` python
+Unit(odd, (Unit(succ, range(10)) | map | list | True)) | filter | list
+```
+
+Obviously this isn't desirable, so this project also 
+includes a special module called *Prelude*, a nod to 
+GHC's Prelude library. Prelude contains wrapper 
+functions and curried functions to side-step this 
+problem.
+
+``` python
+Unit(10) | span | select(odd) | list
+# => Unit([1,3,5,7,9])
+
+Unit(100) | span | fmap(succ) | list | select(odd) | length
+# => Unit(50)
+```
+
+Although List Comprehensions are much more effective to 
+use in Python (less memory usage), this is just another 
+approach of doing things.
+
+## Take / Drop
+
+``` python
+Unit(10) | span | take(5)
+# => Unit([0, 1, 2, 3, 4])
+Unit(10) | span | drop(5)
+# => Unit([5, 6, 7, 8, 9])
 ```
 
 # Notes
