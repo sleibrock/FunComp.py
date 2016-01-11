@@ -183,7 +183,7 @@ list within a container, we can't access append
 directly.
 
 ``` python
-Unit([1,2,3] | append(4) # can't do something like this
+Unit([1,2,3]) | append(4) # can't do something like this
 
 # Note that even list.append is an in-memory op 
 # So this effectively returns None

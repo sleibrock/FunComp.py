@@ -3,5 +3,5 @@ shell:
 ishell:
 	ipython -i Functor/shell.py
 test:
-	python Functor/test.py
+	python Functor/tests.py
 
