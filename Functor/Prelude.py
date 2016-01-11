@@ -201,10 +201,9 @@ def select(func):
     return imap
 
 ### Comparison operators (shorthand filters)
-# TODO: Shorten these using higher order functions/wraps
 def comp(comp_fun):
     """
-    comp :: (a -> b) -> a -> [a] -> a
+    comp :: (a -> b) -> a -> [a] -> [a]
     """
     def inner1(value):
         def inner2(data):
@@ -214,19 +213,41 @@ def comp(comp_fun):
         return inner2
     return inner1
 
+# Yes these look weird, but it's necessary (TODO?)
 def lt(y):
+    """
+    lt :: a -> [a] -> [a]
+    """
     return comp(lambda x: x < y)(y)
 
 def lte(y):
+    """
+    lte :: a -> [a] -> [a]
+    """
     return comp(lambda x: x <= y)(y)
 
 def gt(y):
+    """
+    gt :: a -> [a] -> [a]
+    """
     return comp(lambda x: x > y)(y)
 
 def gte(y):
+    """
+    gte :: a -> [a] -> [a]
+    """
     return comp(lambda x: x >= y)(y)
 
 def equals(y):
+    """
+    equals :: a -> [a] -> [a]
+    """
     return comp(lambda x: x == y)(y)
+
+def nequals(y):
+    """
+    nequals :: a -> [a] -> [a]
+    """
+    return comp(lambda x: x != y)(y)
 
 # end

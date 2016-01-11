@@ -102,6 +102,7 @@ Now's not the time for install; that comes later.
 Unit("Hello world!") | print
 ```
 * _print_ doesn't return a value so we end up with a None
+* _print_ also isn't a function in Python 2
 
 ## Number Manipulation
 
@@ -116,7 +117,7 @@ Unit(4,3) | (lambda x,y: x*y)
 ## Mapping Functions Across Lists
 
 ``` python
-Unit(succ, range(10)) | map | list
+Unit(succ, range(10)) | map
 # => Unit([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 ```
 
@@ -130,7 +131,7 @@ apply it to a function that took 2?
 
 In the above example for mapping
 ``` python
-Unit(succ, range(10)) | map | list
+Unit(succ, range(10)) | map
 ```
 Our Unit stores two values, _succ_ and _range(10)_. 
 _map()_ takes two values so this is a natural application. 
@@ -151,10 +152,10 @@ functions and curried functions to side-step this
 problem.
 
 ``` python
-Unit(10) | span | select(odd) | list
+Unit(10) | span | select(odd) 
 # => Unit([1,3,5,7,9])
 
-Unit(100) | span | fmap(succ) | list | select(odd) | length
+Unit(100) | span | fmap(succ) | select(odd) | length
 # => Unit(50)
 ```
 
@@ -190,12 +191,13 @@ Unit([1,2,3]) | (lambda x: x.append(4))
 # => None
 ```
 
-The Unit functor does not store data between operations 
-but rather returns the results of functions that operate 
+The Unit Functor does not store data between operations 
+but rather stores the results of functions that operate 
 on the data. _list.append_ doesn't return anything, 
 but instead we have to do shortcuts like:
 
 ``` python
+# This probably won't be added to Prelude
 Unit([1,2,3]) | (lambda x: x + [4]) # works but ugly
 ```
 
@@ -223,3 +225,11 @@ Unit(4) | succ | neg | True
 Unit(4) | False
 # => None
 ```
+
+# Credits and Such
+
+If you like this, check out the following:
+
+* [The Haskell Language](https://haskell.org/)
+* [PyMonad](https://pypi.python.org/pypi/PyMonad/)
+
