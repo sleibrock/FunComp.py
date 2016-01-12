@@ -286,8 +286,8 @@ def zip_with(zipper):
     """
     def izip(data):
         if not isinstance(data, list):
-            return list(zip(zipper, [data]))
-        return list(zip(zipper, data))
+            return list(zip([data], zipper))
+        return list(zip(data, zipper))
     return izip
 
 # The return of the "reduce" operation
