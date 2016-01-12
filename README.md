@@ -233,6 +233,63 @@ The new Unit version looks something more akin to Ruby
 syntax, but in most cases using Python's list comps are 
 better to use for performance (less memory usage).
 
+## Reduce on Lists
+
+The latest feature added is a clone of _functools.reduce_. 
+It breaks down the elements of a list into a series of 
+binary computations and returns the result.
+
+``` python
+# Finding the sum of a list of data without reduce
+Unit(10) | span | sum
+# => Unit(45)
+
+# Doing the same thing as sum()
+Unit(10) | span | reduce(add)
+# => Unit(45)
+
+# Defining our own product() function
+Unit(1) | to(11) | reduce(mul)
+# => Unit(3628800)
+
+# Factorial of 5
+Unit(1) | to(6) | reduce(mul)
+# => Unit(120)
+```
+## Zipping
+
+_zip_ is a cool function that takes in a number of 
+lists and zips the values together to form a list of 
+tuples, with matching position elements from each list.
+
+Since _zip_ takes in a number of arguments, you have a few 
+options of doing zipping.
+
+Method one: using Unit to store the arguments of _zip_, as 
+this lets you use any number of lists and returns the correct 
+result.
+``` python
+Unit([1,2],[3,4]) | zip | list
+# => Unit([(1,3), (2,4)])
+```
+
+Method two: using the new zip_with method that will perform 
+a _zip_ action against a Unit and return the _zip_ of the two 
+lists. The downside is that this can't be chained to produce 
+the same results as a 3-or-more _zip_ call.
+``` python
+Unit([1,2]) | zip_with([3,4])
+# => Unit([(1,3),(2,4)])
+```
+
+But if you keep chaining zip_with calls, it produces 
+the same output as chaining _zip_ calls.
+``` python
+# Equivalent to zip(zip([1,2],[3,4]),[5,6])
+Unit([1,2]) | zip_with([3,4]) | zip_with([5,6])
+# => Unit([((1,3),5),((2,4),6)])
+```
+
 # Disadvantages
 
 Since we're effectively continuously passing functions 
