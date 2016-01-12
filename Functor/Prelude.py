@@ -89,6 +89,34 @@ def pred(x):
     """
     return x - 1
 
+# Redefine common math ops so we 
+# Don't have to constantly import operator package
+def add(x, y):
+    """
+    add :: Num a => a -> a -> a
+    """
+    return x + y
+
+def sub(x, y):
+    """
+    sub :: Num a => a -> a -> a
+    """
+    return x - y
+
+def mul(x, y):
+    """
+    mul :: Num a => a -> a -> a
+    """
+    return x * y
+
+def div(x, y):
+    """
+    div :: Num a => a -> a -> a
+    """
+    if y == 0:
+        raise Exception("Divide by zero error")
+    return x / y
+
 # Negate a value (Unit(5) | negate => -5)
 def neg(x):
     """
@@ -253,10 +281,30 @@ def nequals(y):
 
 # Zipping with Units
 def zip_with(zipper):
+    """
+    zip_with :: [a] -> [b] -> [b]
+    """
     def izip(data):
         if not isinstance(data, list):
             return list(zip(zipper, [data]))
         return list(zip(zipper, data))
     return izip
+
+# The return of the "reduce" operation
+def reduce(func):
+    """
+    reduce :: Foldable t => (a -> b -> b) -> t a -> b
+    """
+    def ired(data):
+        accum = None
+        if not isinstance(data, list):
+            data = list(data)
+        for x in data:
+            if accum is None:
+                accum = x
+            else:
+                accum = func(x, accum)
+        return accum
+    return ired
 
 # end
