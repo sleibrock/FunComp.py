@@ -217,6 +217,7 @@ def comp(comp_fun):
 def lt(y):
     """
     lt :: a -> [a] -> [a]
+```
     """
     return comp(lambda x: x < y)(y)
 
@@ -249,5 +250,13 @@ def nequals(y):
     nequals :: a -> [a] -> [a]
     """
     return comp(lambda x: x != y)(y)
+
+# Zipping with Units
+def zip_with(zipper):
+    def izip(data):
+        if not isinstance(data, list):
+            return list(zip(zipper, [data]))
+        return list(zip(zipper, data))
+    return izip
 
 # end
