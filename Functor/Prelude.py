@@ -303,8 +303,17 @@ def reduce(func):
             if accum is None:
                 accum = x
             else:
-                accum = func(x, accum)
+                accum = func(accum, x)
         return accum
     return ired
+
+# concat function
+# Essentially the same as a reduce operation
+# Lists and strings both have + ops
+def concat(data):
+    """
+    concat :: [[a]] -> [a]
+    """
+    return reduce(add)(data)    
 
 # end
