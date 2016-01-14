@@ -237,7 +237,7 @@ better to use for performance (less memory usage).
 
 The latest feature added is a clone of _functools.reduce_. 
 It breaks down the elements of a list into a series of 
-binary computations and returns the result.
+binary computations and returns the final result.
 
 ``` python
 # Finding the sum of a list of data without reduce
@@ -290,6 +290,24 @@ Unit([1,2]) | zip_with([3,4]) | zip_with([5,6])
 # => Unit([((1,3),5),((2,4),6)])
 ```
 
+## Concatenation
+
+Concatenation in GHC is similar to folding over 
+a list of data with an empty array using the concat (++) 
+operator. For Python, the __add__ operator is configured 
+for both lists and strings, making it a little similar to how 
+lists and strings are defined in Haskell.
+
+_concat_ here is defined to be simply _reduce_ with the 
+_add_ function over a list of lists or strings.
+``` python
+Unit([[1],[2]]) | concat
+# => Unit([1, 2])
+
+Unit(["hello ", "world"]) | concat
+# => Unit('hello world')
+```
+
 # Disadvantages
 
 Since we're effectively continuously passing functions 
@@ -312,17 +330,13 @@ Unit([1,2,3]) | (lambda x: x.append(4))
 The Unit Functor does not store data between operations 
 but rather stores the results of functions that operate 
 on the data. _list.append_ doesn't return anything, 
-but instead we have to do shortcuts like:
+but we can use functions like _concat_ to merge lists 
+together.
 
 ``` python
-# This probably won't be added to Prelude
-Unit([1,2,3]) | (lambda x: x + [4]) # works but ugly
+Unit([[1,2,3],[4,5,6]]) | concat
+# => Unit([1, 2, 3, 4, 5, 6])
 ```
-
-The point of this library is to inspire more 
-functional use of Python rather than imperative, OO-style 
-code. Accessing an object's methods is not actually 
-something to be aimed for currently with this library.
 
 # Notes
 
