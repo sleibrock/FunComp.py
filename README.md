@@ -1,4 +1,4 @@
-Functor.py
+FunComp.py
 ========
 
 Quick and dirty function chaining with some 
@@ -11,7 +11,7 @@ and hideous, so much that they'll probably tell you to
 *not* nest functions within eachother too much.
 
 So here's a way of passing functions to data values 
-in a point-free way that's nice and easy.
+in a point-free-ish way that's fun and easy.
 
 # Why?
 
@@ -46,35 +46,6 @@ This creates a much nicer looking function
 composition that can easily be modified and 
 extended upon without much confusion.
 
-# What the heck's a Functor?
-
-A Functor is a special data type that follows this rule:
-```
-fmap :: (a -> b) -> f a -> f b
-```
-
-It takes in a function that has a type of (a -> b), 
-applies the function to a Functor with a type of A, 
-applies it to the A, and turns it into a Functor with a 
-type of B.
-
-In Haskell we can write quick expressions that allow 
-us to manipulate special data types like Maybe or List.
-
-``` haskell
-Prelude> (+1) <$> [1..10]
-[2,3,4,5,6,7,8,9,10,11]
-```
-
-This applies a (+1) function across the List Functor 
-containing all numbers between 1 and 10.
-
-Python doesn't have the same magic rules as Functors and 
-the like, but the idea of Functors is what strongly 
-influenced this project. Strictly speaking, this isn't 
-exactly a "true" Functor unit in Python, but something 
-inspired by it.
-
 # Requirements 
 
 Python 3 is the optimal choice, as it changes 
@@ -84,12 +55,12 @@ be buggy and issues should be filed immediately.
 
 # Install
 
-Now's not the time for install; that comes later.
+Soon™
 
 # Examples
 
 Most examples below will be using functions defined within 
-_Functor.Prelude_. _Prelude_ is a package dedicated at mimicking 
+_FunComp.Prelude_. _Prelude_ is a package dedicated at mimicking 
 most common functions from Haskell GHC's "Prelude" library.
 
 ## Hello World
@@ -158,13 +129,13 @@ takes a number and gives us a list of numbers. This is
 different from _range_, as _span_ always returns a list. 
 In Python 3 this behaviour was changed.
 
-Make a list of numbers:
+### Creating a List from Scratch
 ``` python
 Unit(10) | span 
 # => Unit([0,1,2,3,4,5,6,7,8,9])
 ```
 
-Taking head and tail of a list:
+### Head and Tail of a List
 ``` python
 Unit(5) | span | head
 # => Unit(0)
@@ -173,30 +144,29 @@ Unit(5) | span | tail
 # => Unit([1,2,3,4])
 ```
 
-Applying a function over a list:
+### Mapping a Function over a List
 ``` python
 Unit(5) | span | fmap(suc)
 # => Unit([1,2,3,4,5])
 ```
 
-Filtering elements via a predicate function:
+### Filtering elements with a Predicate
 ``` python
 Unit(10) | span | select(even)
 # => Unit([0,2,4,6,8])
 ```
 
-List length of a Unit list:
+### Length of a List
 ``` python
 Unit(10) | span | length
 # => 10
 ```
 
-Elements less than a fixed number:
+### Filtering Numbers Less than a Value
 ``` python
 Unit(10) | span | lt(5)
 # => Unit([0,1,2,3,4])
 ```
-
 Other functions include:
 * lte
 * gt
@@ -204,7 +174,7 @@ Other functions include:
 * equals
 * nequals
 
-Taking and dropping a number of elements
+### Take/Drop Elements from a List
 ``` python
 Unit(10) | span | take(5)
 # => Unit([0,1,2,3,4])
@@ -213,27 +183,27 @@ Unit(10) | span | drop(5)
 # => Unit([5,6,7,8,9])
 ```
 
-If you don't want to start a range from 0, you can use the _to_ 
-function which takes two numbers and creates a range instead.
+### Spawning a Range of Numbers
+
 ``` python
 Unit(5) | to(10)
-# => Unit([5,6,7,8,9])
+# => Unit([5, 6, 7, 8, 9, 10])
 ```
 
-Example of a "list comprehension":
+### List Comprehension
 ``` python
 # Take numbers from 1 to 10, square, take the even numbers
-Unit(1) | to(11) | fmap(square) | select(even)
+Unit(1) | to(10) | fmap(square) | select(even)
 # => Unit([4, 16, 36, 64, 100])
 
-# The equivalent list comp would be
+# The equivalent list comp in classic Python would be
 [square(x) for x in range(1,11) if even(square(x))]
 ```
 The new Unit version looks something more akin to Ruby 
 syntax, but in most cases using Python's list comps are 
 better to use for performance (less memory usage).
 
-## Reduce on Lists
+### Reduce on Lists
 
 The latest feature added is a clone of _functools.reduce_. 
 It breaks down the elements of a list into a series of 
@@ -256,7 +226,7 @@ Unit(1) | to(11) | reduce(mul)
 Unit(1) | to(6) | reduce(mul)
 # => Unit(120)
 ```
-## Zipping
+### Zipping
 
 _zip_ is a cool function that takes in a number of 
 lists and zips the values together to form a list of 
@@ -290,7 +260,7 @@ Unit([1,2]) | zip_with([3,4]) | zip_with([5,6])
 # => Unit([((1,3),5),((2,4),6)])
 ```
 
-## Concatenation
+### Concatenation
 
 Concatenation in GHC is similar to folding over 
 a list of data with an empty array using the concat (++) 
