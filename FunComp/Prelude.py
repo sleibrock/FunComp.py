@@ -19,12 +19,14 @@ from sys import version_info
 
 # Typeclass stuff
 # Use these to enforce rules amongst Unit functions
-# Int - units that represent whole numbers (int, bool)
-# Num - numbers used in math (ints, floats, comp)
+# Int  - units that represent whole numbers (int, bool)
+# Num  - numbers used in math (ints, floats, comp)
 # Real - numbers that are non-imaginary (ints, floats)
-# Ord - types that can be ordered based on their value(s)
+# Ord  - types that can be ordered based on their value(s)
 # Enum - types that have positions or storage of some kind
-Int, Num, Real, Ord, Enum = range(5)
+# Fold - values that can gain or lose shape
+# Any  - supports any type, literally
+Int, Num, Real, Ord, Enum, Fold, Any = range(7)
 
 # TODO: does this system allow modularity/extendability non-builtins?
 typeclasses = {
@@ -33,6 +35,8 @@ typeclasses = {
         Real : (int, float),
         Ord  : (int, float, complex, bool, str, list, bytes),
         Enum : (list, tuple, set, frozenset, dict, str),
+        Fold : (int, float, complex, bool, list, tuple, str, bytes),
+        Any  : (object,),
 }
 
 # Typeclass check functions
@@ -150,10 +154,10 @@ def pred(value):
 # Redefine common math ops so we can enforce types 
 def add(left_value, right_value):
     """
-    add :: Num a => a -> a -> a
+    add :: Fold a => a -> a -> a
     """
-    if isnt_type(Num, left_value, right_value):
-        raise Exception("add() -Non-numeric types given")
+    if isnt_type(Fold, left_value, right_value):
+        raise Exception("add() - Non-foldable types given")
     return left_value + right_value
 
 def sub(left_value, right_value):
@@ -161,7 +165,7 @@ def sub(left_value, right_value):
     sub :: Num a => a -> a -> a
     """
     if isnt_type(Num, left_value, right_value):
-        raise Exception("sub() -Non-numeric types given")
+        raise Exception("sub() - Non-numeric types given")
     return left_value - right_value
 
 def mul(left_value, right_value):
@@ -169,7 +173,7 @@ def mul(left_value, right_value):
     mul :: Num a => a -> a -> a
     """
     if isnt_type(Num, left_value, right_value):
-        raise Exception("mul() -Non-numeric types given")
+        raise Exception("mul() - Non-numeric types given")
     return left_value * right_value
 
 def div(left_value, right_value):
@@ -177,7 +181,7 @@ def div(left_value, right_value):
     div :: Num a => a -> a -> a
     """
     if isnt_type(Num, left_value, right_value):
-        raise Exception("div() -Non-numeric types given")
+        raise Exception("div() - Non-numeric types given")
     if right_value == 0:
         raise ZeroDivisionError
     return left_value / right_value
@@ -188,7 +192,7 @@ def neg(value):
     neg :: Num a => a -> a
     """
     if isnt_type(Num, value):
-        raise Exception("div() -Non-numeric types given")
+        raise Exception("div() - Non-numeric types given")
     return (-value)
 
 # Even and odd, only works for Real numbers
@@ -197,7 +201,7 @@ def odd(value):
     odd :: Real a => a -> Bool
     """
     if isnt_type(Real, value):
-        raise Exception("odd() - no complex values")
+        raise Exception("odd() - non-real type given")
     return bool(value & 1)
 
 def even(value):
@@ -205,7 +209,7 @@ def even(value):
     even :: Real a => a -> Bool
     """
     if isnt_type(Real, value):
-        raise Exception("odd() - no complex values")
+        raise Exception("even() - non-real type given")
     return bool(not value & 1)
 
 # Exponentiate a number by a number
