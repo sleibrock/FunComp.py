@@ -73,8 +73,8 @@ class TestChains(unittest.TestCase):
         self.assertEqual(f, [0,1,2,3,4,5,6,7,9])
 
     def testReduce(self):
-        a = Unit(1) | to(11) | reduce(add) | True
-        b = Unit(1) | to(11) | reduce(mul) | True
+        a = Unit(1) | to(10) | reduce(add) | True
+        b = Unit(1) | to(10) | reduce(mul) | True
         self.assertEqual(a, 55)
         self.assertEqual(b, 3628800)
 

@@ -260,7 +260,7 @@ def span(value):
     return list(range(value))
 
 # Create a list from Y to X
-# Desired use: Unit(0) | to(11) => [0..10]
+# Desired use: Unit(0) | to(10) => [0..10]
 def to(end):
     """
     to :: Int -> Int -> [Int]
@@ -268,7 +268,7 @@ def to(end):
     def ito(begin):
         if isnt_type(Int, begin, end):
             raise Exception("to() - invalid range types")
-        return list(range(begin, end))
+        return list(range(begin, succ(end)))
     return ito
 
 # Wrap len() over an object that may or may 
