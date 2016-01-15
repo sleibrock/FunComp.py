@@ -60,7 +60,7 @@ Soon™
 # Examples
 
 Most examples below will be using functions defined within 
-_Functor.Prelude_. _Prelude_ is a package dedicated at mimicking 
+_FunComp.Prelude_. _Prelude_ is a package dedicated at mimicking 
 most common functions from Haskell GHC's "Prelude" library.
 
 ## Hello World
