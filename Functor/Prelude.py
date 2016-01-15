@@ -17,58 +17,108 @@ TODO:
 # If we run into any 2/3 bugs, fix it with version_info
 from sys import version_info
 
+# Typeclass stuff
+# Use these to enforce rules amongst Unit functions
+typeclasses = {
+        "num" : (int, float, complex),
+        "enum": (int, float, complex),
+        "ord" : (int, float, complex, str, bool, str, list),
+        "foldable" : (str, list, tuple, dict, set, frozenset, iter),
+        "traversable" : (str, list, tuple, dict, set, frozenset, iter),
+        "eq" : (), # work on more
+}
+
+# Wrapper variables for Typeclasses
+# Write a lot less quotes in code (these should be enums)
+Num = "num"
+Enum = "enum"
+Ord = "ord"
+Foldable = "foldable"
+Traversable = "traversable"
+Eq = "eq"
+
+# Typeclass check functions
+def is_type(cls, value):
+    """
+    Check if a value belongs in a typeclass
+    """
+    return any((isinstance(value, c) for c in typeclasses[cls.lower()]))
+
+def isnt_type(cls, value):
+    """
+    Wrapper for is_type so you can avoid writing "not is_type"
+    """
+    return not is_type(cls, value)
+
+# A curried version of is_type so you can pass it to Unit values
+def type_of(cls):
+    """
+    type_of :: String -> a -> Bool
+    """
+    def itype(data):
+        return is_type(cls, data)
+    return itype
+
 # This essentially returns the entire Unit container
-def id(*x):
+def id(*data):
     """
     id :: a -> a
     """
-    if len(x) > 1:
-        return x
+    if len(data) > 1:
+        return data
     else:
-        return x[0]
+        return data[0]
 
 # Equivalent to putStrLn from Haskell.GHC
-def puts(x):
+def puts(data):
     """
     puts :: String -> IO ()
     Will always return None
     """
-    print(x)
+    print(data)
 
 # Head and Tail from Haskell.GHC
-def head(x):
+def head(data):
     """
     head :: [a] -> [a]
+    If data is not a list type, return it
     """
-    if not isinstance(x, list):
-        return x
-    return x[0]
+    if not isinstance(data, list):
+        return data
+    return data[0]
 
 # Tail will be undefined (None) if not a list
-def tail(x):
+def tail(data):
     """
     tail :: [a] -> [a]
+    If data is not a list, return None
     """
-    if not isinstance(x, list):
+    if not isinstance(data, list):
         return None
-    return x[1:]
+    return data[1:]
 
 # Take a number of elements from a list
-def take(x):
+def take(amount):
     """
     take :: Int -> [a] -> [a]
+    If the unit data is not a list, return None
     """
+    if not isinstance(amount, int):
+        raise Exception("take() - value given not an Integer")
     def itake(data):
         if not isinstance(data, list):
             return None
-        return data[:x]
+        return data[:amount]
     return itake
 
 # Drop a number of elements from a list
-def drop(x):
+def drop(amount):
     """
     drop :: Int -> [a] -> [a]
+    If the unit data is not a list, return None
     """
+    if not isinstance(amount, int):
+        raise Exception("drop() - value given not an Integer")
     def idrop(data):
         if not isinstance(data, list):
             return None
@@ -76,53 +126,53 @@ def drop(x):
     return idrop
 
 # Successor of a value (increment on Int)
-def succ(x):
+def succ(value):
     """
     succ :: Enum a => a -> a
     """
-    return x + 1
+    return value + 1
 
 # Predecessor of a value (decrement on Int)
-def pred(x):
+def pred(value):
     """
     pred :: Enum a => a -> a
     """
-    return x - 1
+    return value - 1
 
 # Redefine common math ops so we 
 # Don't have to constantly import operator package
-def add(x, y):
+def add(left_value, right_value):
     """
     add :: Num a => a -> a -> a
     """
-    return x + y
+    return left_value + right_value
 
-def sub(x, y):
+def sub(left_value, right_value):
     """
     sub :: Num a => a -> a -> a
     """
-    return x - y
+    return left_value - right_value
 
-def mul(x, y):
+def mul(left_value, right_value):
     """
     mul :: Num a => a -> a -> a
     """
-    return x * y
+    return left_value * right_value
 
-def div(x, y):
+def div(left_value, right_value):
     """
     div :: Num a => a -> a -> a
     """
-    if y == 0:
-        raise Exception("Divide by zero error")
-    return x / y
+    if right_value == 0:
+        raise ZeroDivisionError
+    return left_value / right_value
 
 # Negate a value (Unit(5) | negate => -5)
-def neg(x):
+def neg(value):
     """
     neg :: Num a => a -> a
     """
-    return (-x)
+    return (-value)
 
 # Even and odd (No explanation)
 def odd(x):
@@ -178,7 +228,7 @@ def collect(amount):
 # Usage: Unit(10) | span => [0..10]
 def span(x):
     """
-    span :: Num a => a -> [a]
+    span :: Int -> [Int]
     """
     return list(range(x))
 
@@ -186,7 +236,7 @@ def span(x):
 # Desired use: Unit(0) | to(10) => [0..10]
 def to(x):
     """
-    to :: Num a => a -> a -> [a]
+    to :: Int -> Int -> [Int]
     """
     def ito(y):
         return list(range(y,x))
