@@ -25,6 +25,14 @@ class TestChains(unittest.TestCase):
         b = Unit(5) | False
         self.assertEqual(a, 5)
         self.assertEqual(b, None)
+    
+    def testLengths(self):
+        a = Unit(10) | length | True
+        b = Unit("Hey") | length | True
+        c = Unit(10) | span | length | True
+        self.assertEqual(a, 1)
+        self.assertEqual(b, 3)
+        self.assertEqual(c, 10)
 
     def testSuccAndPred(self):
         a = Unit(5) | succ | True
