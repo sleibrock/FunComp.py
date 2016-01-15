@@ -29,7 +29,7 @@ typeclasses = {
         Int  : (int, bool),
         Num  : (int, float, complex),
         Real : (int, float),
-        Ord  : (int, float, complex, str, bool, str, list, bytes),
+        Ord  : (int, float, complex, bool, str, list, bytes),
         Enum : (list, tuple, set, frozenset, dict, str),
 }
 
