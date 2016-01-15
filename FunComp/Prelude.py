@@ -19,7 +19,9 @@ from sys import version_info
 
 # Typeclass stuff
 # Use these to enforce rules amongst Unit functions
-# Num - numbers (ints, floats, comp)
+# Int - units that represent whole numbers (int, bool)
+# Num - numbers used in math (ints, floats, comp)
+# Real - numbers that are non-imaginary (ints, floats)
 # Ord - types that can be ordered based on their value(s)
 # Enum - types that have positions or storage of some kind
 Int, Num, Real, Ord, Enum = range(5)

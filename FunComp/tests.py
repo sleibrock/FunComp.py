@@ -8,13 +8,13 @@ try:
     from Unit import *
     from Prelude import *
 except ImportError:
-    print("Couldn't find the Functor package")
+    print("Couldn't find the FunComp package")
     quit()
 
 class TestChains(unittest.TestCase):
     """
     Test different operations of 
-    Prelude against the Functor
+    Prelude against the Unit class
     """
     def testBasicNumberAddition(self):
         x = Unit(5) | (lambda x: x + 1) | True

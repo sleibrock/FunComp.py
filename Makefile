@@ -1,7 +1,7 @@
 shell:
-	python -i Functor/shell.py 
+	python -i FunComp/shell.py 
 ishell:
-	ipython -i Functor/shell.py
+	ipython -i FunComp/shell.py
 test:
-	python Functor/tests.py
+	python FunComp/tests.py
 
