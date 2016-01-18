@@ -1,4 +1,4 @@
-FunComp.py
+Unit.py
 ========
 
 Quick and dirty function chaining with some 
@@ -60,7 +60,7 @@ Soon™
 # Examples
 
 Most examples below will be using functions defined within 
-_FunComp.Prelude_. _Prelude_ is a package dedicated at mimicking 
+_Unit.Prelude_. _Prelude_ is a package dedicated at mimicking 
 most common functions from Haskell GHC's "Prelude" library.
 
 ## Hello World

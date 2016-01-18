@@ -14,29 +14,28 @@ TODO:
     * workaround: Unit(10) | range | list | select(odd)
 """
 
-# If we run into any 2/3 bugs, fix it with version_info
-from sys import version_info
-
 # Typeclass stuff
 # Use these to enforce rules amongst Unit functions
-# Int  - units that represent whole numbers (int, bool)
-# Num  - numbers used in math (ints, floats, comp)
-# Real - numbers that are non-imaginary (ints, floats)
-# Ord  - types that can be ordered based on their value(s)
-# Enum - types that have positions or storage of some kind
-# Fold - values that can gain or lose shape
-# Any  - supports any type, literally
-Int, Num, Real, Ord, Enum, Fold, Any = range(7)
+# Int    - units that represent whole numbers (int, bool)
+# Num    - numbers used in math (ints, floats, comp)
+# Real   - numbers that are non-imaginary (ints, floats)
+# Ord    - types that can be ordered based on their value(s)
+# Enum   - types that have positions or storage of some kind
+# Fold   - values that can gain or lose shape
+# String - supports only the string-type (strings != lists)
+# Any    - supports any type, literally
+Int, Num, Real, Ord, Enum, Fold, String, Any = range(8)
 
 # TODO: does this system allow modularity/extendability non-builtins?
 typeclasses = {
-        Int  : (int, bool),
-        Num  : (int, float, complex),
-        Real : (int, float),
-        Ord  : (int, float, complex, bool, str, list, bytes),
-        Enum : (list, tuple, set, frozenset, dict, str),
-        Fold : (int, float, complex, bool, list, tuple, str, bytes),
-        Any  : (object,),
+        Int    : (int, bool),
+        Num    : (int, float, complex),
+        Real   : (int, float),
+        Ord    : (int, float, complex, bool, str, list, bytes),
+        Enum   : (list, tuple, set, frozenset, dict, str),
+        Fold   : (int, float, complex, bool, list, tuple, str, bytes),
+        String : (str,),
+        Any    : (object,),
 }
 
 # Typeclass check functions
@@ -140,15 +139,19 @@ def drop(amount):
 # Successor of a value (increment on Int)
 def succ(value):
     """
-    succ :: Enum a => a -> a
+    succ :: Num a => a -> a
     """
+    if isnt_type(Num, value):
+        raise Exception("succ() - value not Ord class")
     return value + 1
 
 # Predecessor of a value (decrement on Int)
 def pred(value):
     """
-    pred :: Enum a => a -> a
+    pred :: Num a => a -> a
     """
+    if isnt_type(Num, value):
+        raise Exception("pred() - value not Ord class")
     return value - 1
 
 # Redefine common math ops so we can enforce types 
@@ -214,14 +217,14 @@ def even(value):
 
 # Exponentiate a number by a number
 # Curries pow(x,y)
-def expo(x):
+def expo(value):
     """
     expo :: Num a => a -> a -> a
     """
     def iexp(base):
         if isnt_type(Num, value, base):
             raise Exception("expo() - invalid input")
-        return pow(base, x)
+        return pow(base, value)
     return iexp
 
 # Square a number (wraps pow)
@@ -292,7 +295,7 @@ def length(data):
 # If the data isn't a list, turn it into one
 def fmap(func):
     """
-    fmap :: (a -> b) -> f a -> f b
+    fmap :: Enum f => (a -> b) -> f a -> f b
     """
     def imap(data):
         if not isinstance(data, list):
@@ -316,7 +319,7 @@ def select(func):
 ### Comparison operators (shorthand filters)
 def comp(comp_fun):
     """
-    comp :: (a -> b) -> a -> [a] -> [a]
+    comp :: (a -> a -> Bool) -> a -> [a] -> [a]
     """
     def inner1(value):
         def inner2(data):
@@ -369,7 +372,7 @@ def zip_with(zipper):
     zip_with :: [a] -> [b] -> [b]
     """
     def izip(data):
-        if not isinstance(data, list):
+        if isnt_type(Enum, data):
             return list(zip([data], zipper))
         return list(zip(data, zipper))
     return izip
@@ -377,11 +380,11 @@ def zip_with(zipper):
 # The return of the "reduce" operation
 def reduce(func):
     """
-    reduce :: Enum t => (a -> b -> b) -> t a -> b
+    reduce :: Fold a => (a -> a -> a) -> [a] -> a
     """
     def ired(data):
         accum = None
-        if not isinstance(data, list):
+        if isnt_type(Enum, data):
             data = list(data)
         for x in data:
             if accum is None:
@@ -398,6 +401,69 @@ def concat(data):
     """
     concat :: [[a]] -> [a]
     """
-    return reduce(add)(data)    
+    return reduce(add)(data)
+
+# String functions
+# Since string isn't a list, additional ops 
+# are required for more functionality
+
+# String split
+def split(value):
+    """
+    split :: String a -> a -> a -> [a]
+    """
+    def isplit(data):
+        if isnt_type(String, value, data):
+            raise Exception("split() - non-string arguments")
+        return data.split(value)
+    return isplit
+
+# Join function
+# Inverse of string split (in a way)
+def join(value=""):
+    """
+    join :: String a => a -> [a] -> a
+    """
+    def isplit(data):
+        if isnt_type(String, value):
+            raise Exception("join() - non-string argument")
+        if isnt_type(Enum, data):
+            raise Exception("join() - non-list supplied")
+        return value.join(data)
+    return isplit
+
+# lines function
+# Similar to GHC.lines
+def lines(data):
+    """
+    lines :: String a => a -> [a]
+    """
+    return split('\n')(data)
+
+# unlines function
+# Similar to GHC.unlines
+# Inverse of lines
+def unlines(data):
+    """
+    unlines :: String a => [a] -> a
+    """
+    return join('\n')(data)
+
+# words function
+# Similar to GHC.words
+def words(data):
+    """
+    words :: String a => a -> [a]
+    """
+    return split(' ')(data)
+    
+
+# unwords function
+# Similar to GHC.unwords, inverse of words
+def unwords(data):
+    """
+    unwords :: String a => [a] -> a
+    """
+    return join(' ')(data)
 
 # end

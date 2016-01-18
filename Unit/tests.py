@@ -8,7 +8,7 @@ try:
     from Unit import *
     from Prelude import *
 except ImportError:
-    print("Couldn't find the FunComp package")
+    print("Couldn't find the Unit package")
     quit()
 
 class TestChains(unittest.TestCase):
@@ -75,8 +75,12 @@ class TestChains(unittest.TestCase):
     def testReduce(self):
         a = Unit(1) | to(10) | reduce(add) | True
         b = Unit(1) | to(10) | reduce(mul) | True
+        c = Unit(["Hello ", "world"]) | concat | True
+        d = Unit([[1,2],[3,4]]) | concat | True
         self.assertEqual(a, 55)
         self.assertEqual(b, 3628800)
+        self.assertEqual(c, "Hello world")
+        self.assertEqual(d, [1,2,3,4])
 
 
 if __name__ == "__main__":
