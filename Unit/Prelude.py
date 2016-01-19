@@ -268,6 +268,22 @@ def cube(value):
         raise Exception("cube() - invalid input")
     return pow(value, 3)
 
+# Scale a list of numbers by a scalar
+# If we run into a non-numeric type, raise exception
+def scale(value):
+    """
+    scale :: Num a => a -> [a] -> [a]
+    """
+    def iscale(data):
+        res = list()
+        try:
+            for x in data:
+                res.append(x*value)
+            return res
+        except Exception as e:
+            raise Exception("scale() - non-numeric type encountered")
+    return iscale
+
 # Take a function with no arguments and 
 # collects the results a number of times
 def collect(amount):
