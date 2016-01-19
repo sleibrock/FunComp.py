@@ -68,7 +68,21 @@ be buggy and issues should be filed immediately.
 
 # Install
 
-Soon™
+From _python-pip_, just run:
+```
+pip install Unit.py
+```
+
+To check if you have it installed:
+``` python
+import Unit
+print(Unit.__version__)
+```
+
+To import everything, try this line:
+```
+from Unit.All import *
+```
 
 # Examples
 
