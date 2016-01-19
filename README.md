@@ -34,10 +34,23 @@ Python naturally.
 final_value = i(h(g(f(x))))
 ```
 Messy, right? Well this happens far too often in 
-Python.
+Python. It's not terribly dynamic because if we 
+want to go back and add more functions to the mix, 
+we have to wiggle our way through that sea of 
+parentheses to add another function.
 
-Instead, we can write expressions in the format of
+If instead, we stored our functions in a list:
+``` python
+funcs = [f, g, h, i]
+final_value = None
+for func in funcs:
+    final_value = func(x)
+```
+It's dynamic and you can add as many functions as 
+you want to the list, but it doesn't look very nice.
 
+Instead, with Unit.py, you can write an expression 
+in the following way:
 ``` python
 Unit(x) | f | g | h | i # and so on...
 ```
