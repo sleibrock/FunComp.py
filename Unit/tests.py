@@ -5,7 +5,7 @@ import math
 
 # Test if the package isn't broken locally
 try:
-    from Unit import *
+    from Functor import *
     from Prelude import *
 except ImportError:
     print("Couldn't find the Unit package")
@@ -44,13 +44,13 @@ class TestChains(unittest.TestCase):
         a = Unit(10) | span | head | True
         b = Unit(10) | span | tail | True
         self.assertEqual(a, 0)
-        self.assertEqual(b, list(range(1,10)))
+        self.assertEqual(b, list(range(1, 10)))
 
     def testFilterMap(self):
         a = Unit(100) | span | select(odd) | length | True
         b = Unit(10) | span | fmap(succ) | True
         self.assertEqual(a, 50)
-        self.assertEqual(b, list(range(1,11)))
+        self.assertEqual(b, list(range(1, 11)))
 
     def testTuples(self):
         a = Unit(2,3) | (lambda x, y: x + y) | True
@@ -67,22 +67,31 @@ class TestChains(unittest.TestCase):
         f = Unit(10) | span | nequals(8) | True
         self.assertEqual(a, list(range(6)))
         self.assertEqual(b, list(range(3)))
-        self.assertEqual(c, list(range(5,10)))
-        self.assertEqual(d, list(range(2,10)))
+        self.assertEqual(c, list(range(5, 10)))
+        self.assertEqual(d, list(range(2, 10)))
         self.assertEqual(e, [7])
-        self.assertEqual(f, [0,1,2,3,4,5,6,7,9])
+        self.assertEqual(f, [0, 1, 2, 3, 4, 5, 6, 7, 9])
 
     def testReduce(self):
         a = Unit(1) | to(10) | reduce(add) | True
         b = Unit(1) | to(10) | reduce(mul) | True
         c = Unit(["Hello ", "world"]) | concat | True
-        d = Unit([[1,2],[3,4]]) | concat | True
+        d = Unit([[1, 2], [3, 4]]) | concat | True
         self.assertEqual(a, 55)
         self.assertEqual(b, 3628800)
         self.assertEqual(c, "Hello world")
-        self.assertEqual(d, [1,2,3,4])
+        self.assertEqual(d, [1, 2, 3, 4])
+
+    def testMaths(self):
+        a = Unit(3) | expo(4) | True
+        b = Unit(3) | square | True
+        c = Unit(3) | cube | True
+        self.assertEqual(a, 81)
+        self.assertEqual(b, 9)
+        self.assertEqual(c, 27)
 
 
 if __name__ == "__main__":
     unittest.main()
 
+# end

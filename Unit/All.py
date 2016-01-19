@@ -6,5 +6,5 @@ Python "-m" doesn't allow multiple
 imports for some reason
 """
 
-from Unit import *
-from Prelude import *
+from .Functor import *
+from .Prelude import *

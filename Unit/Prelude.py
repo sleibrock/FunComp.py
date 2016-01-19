@@ -6,12 +6,10 @@ Prelude.py
 Aimed to recreate some basic functions from 
 GHC's "Prelude" collection
 
-TODO:
-    Range does NOT work with built-in filter()
-
-    * filter(odd, range(10)) works
-    * but not Unit(10) | range | select(odd)
-    * workaround: Unit(10) | range | list | select(odd)
+Included in this package:
+    * Typeclass definition dictionary
+    * Typechecking functions
+    * Basic Prelude collection for Unit calculations
 """
 
 # Typeclass stuff
@@ -38,18 +36,27 @@ typeclasses = {
         Any    : (object,),
 }
 
+def get_types(cls):
+    """
+    get_types :: Int -> [a]
+    Return the types belonging to a typeclass
+    """
+    if cls not in typeclasses:
+        raise Exception("get_types() - Type doesn't exist")
+    return typeclasses[cls]
+
 # Typeclass check functions
 def is_type(cls, *value):
     """
-    Check if value(s) belongs in a typeclass
     is_type :: Int -> a -> Bool
+    Check if value(s) belongs in a typeclass
     """
     return any((isinstance(v, c) for v in value for c in typeclasses[cls]))
 
 def isnt_type(cls, *value):
     """
-    Wrapper for is_type so you can avoid writing "not is_type"
     isnt_type :: Int -> a -> Bool
+    Wrapper for is_type so you can avoid writing "not is_type"
     """
     return not is_type(cls, *value)
 
@@ -73,7 +80,7 @@ def type_not(cls):
 def id(*data):
     """
     id :: a -> a
-    A mathematical "id" function to return the Unit
+    A mathematical "id" function to return what was passed
     """
     if len(data) > 1:
         return data
@@ -92,6 +99,7 @@ def puts(data):
 def head(data):
     """
     head :: [a] -> [a]
+    Return the first item in an Enumerable type
     If data is not a list type, return it
     """
     if isnt_type(Enum, data):
@@ -102,6 +110,7 @@ def head(data):
 def tail(data):
     """
     tail :: [a] -> [a]
+    Return the tail (everything after the first)
     If data is not a list, return None
     """
     if isnt_type(Enum, data):
@@ -112,6 +121,7 @@ def tail(data):
 def take(amount):
     """
     take :: Int -> [a] -> [a]
+    Take a number of elements from an Enumerable
     If the unit data is not a list, return None
     """
     if isnt_type(Num, amount):
@@ -126,6 +136,7 @@ def take(amount):
 def drop(amount):
     """
     drop :: Int -> [a] -> [a]
+    Drop values and return the remainder
     If the unit data is not a list, return None
     """
     if not isinstance(amount, int):
@@ -140,6 +151,7 @@ def drop(amount):
 def succ(value):
     """
     succ :: Num a => a -> a
+    Return the successor of the given value
     """
     if isnt_type(Num, value):
         raise Exception("succ() - value not Ord class")
@@ -149,6 +161,7 @@ def succ(value):
 def pred(value):
     """
     pred :: Num a => a -> a
+    Return the predecessor of the given value
     """
     if isnt_type(Num, value):
         raise Exception("pred() - value not Ord class")
@@ -158,6 +171,7 @@ def pred(value):
 def add(left_value, right_value):
     """
     add :: Fold a => a -> a -> a
+    Add together two values (can be non-numerical)
     """
     if isnt_type(Fold, left_value, right_value):
         raise Exception("add() - Non-foldable types given")
@@ -166,6 +180,7 @@ def add(left_value, right_value):
 def sub(left_value, right_value):
     """
     sub :: Num a => a -> a -> a
+    Subtract two values and return the difference
     """
     if isnt_type(Num, left_value, right_value):
         raise Exception("sub() - Non-numeric types given")
@@ -174,6 +189,7 @@ def sub(left_value, right_value):
 def mul(left_value, right_value):
     """
     mul :: Num a => a -> a -> a
+    Multiply two values together and return the product
     """
     if isnt_type(Num, left_value, right_value):
         raise Exception("mul() - Non-numeric types given")
@@ -182,6 +198,7 @@ def mul(left_value, right_value):
 def div(left_value, right_value):
     """
     div :: Num a => a -> a -> a
+    Divide one number by another, except when right_value == 0
     """
     if isnt_type(Num, left_value, right_value):
         raise Exception("div() - Non-numeric types given")
@@ -193,6 +210,7 @@ def div(left_value, right_value):
 def neg(value):
     """
     neg :: Num a => a -> a
+    Negate a numerical value (-x)
     """
     if isnt_type(Num, value):
         raise Exception("div() - Non-numeric types given")
@@ -202,6 +220,7 @@ def neg(value):
 def odd(value):
     """
     odd :: Real a => a -> Bool
+    Determine if a number is odd or not
     """
     if isnt_type(Real, value):
         raise Exception("odd() - non-real type given")
@@ -210,6 +229,7 @@ def odd(value):
 def even(value):
     """
     even :: Real a => a -> Bool
+    Determine if a number is even or not
     """
     if isnt_type(Real, value):
         raise Exception("even() - non-real type given")
@@ -220,6 +240,7 @@ def even(value):
 def expo(value):
     """
     expo :: Num a => a -> a -> a
+    Exponentiate a number by an exponent
     """
     def iexp(base):
         if isnt_type(Num, value, base):
@@ -231,6 +252,7 @@ def expo(value):
 def square(value):
     """
     square :: Num a => a -> a
+    Square a number (wraps around expo())
     """
     if isnt_type(Num, value):
         raise Exception("square() - invalid input")
@@ -240,6 +262,7 @@ def square(value):
 def cube(value):
     """
     cube :: Num a => a -> a
+    Cube a number (wraps around expo())
     """
     if isnt_type(Num, value):
         raise Exception("cube() - invalid input")
@@ -250,6 +273,8 @@ def cube(value):
 def collect(amount):
     """
     collect :: (a) -> Int -> [a]
+    Call a non-argument function N times and 
+    return the results (ie. random.random())
     """
     def icoll(fun):
         res = list()
@@ -263,16 +288,18 @@ def collect(amount):
 def span(value):
     """
     span :: Int -> [Int]
+    Create a span of numbers from 0 to N
     """
     if isnt_type(Int, value):
         raise Exception("span() - invalid range type")
     return list(range(value))
 
-# Create a list from Y to X
+# Create a list from beginning to end
 # Desired use: Unit(0) | to(10) => [0..10]
 def to(end):
     """
     to :: Int -> Int -> [Int]
+    Create a range of numbers from X to Y
     """
     def ito(begin):
         if isnt_type(Int, begin, end):
@@ -286,6 +313,8 @@ def to(end):
 def length(data):
     """
     length :: Enum t => t a -> Int
+    Return the length of an Enumerable type
+    If not enumerable, return 1
     """
     if is_type(Enum, data):
         return len(data)
@@ -296,6 +325,8 @@ def length(data):
 def fmap(func):
     """
     fmap :: Enum f => (a -> b) -> f a -> f b
+    Map a function across a functor
+    Similar to builtins.map()
     """
     def imap(data):
         if not isinstance(data, list):
@@ -308,7 +339,9 @@ def fmap(func):
 # Usage: Unit(100) | span | select(odd) => (all odds) 
 def select(func):
     """
-    filter :: (a -> Bool) -> [a] -> [a]
+    select :: (a -> Bool) -> [a] -> [a]
+    Grab elements based on a filter function
+    Similar to builtins.filter()
     """
     def imap(data):
         if not isinstance(data, list):
@@ -320,6 +353,8 @@ def select(func):
 def comp(comp_fun):
     """
     comp :: (a -> a -> Bool) -> a -> [a] -> [a]
+    Comp serves as the higher-order for comparison operators
+    Use the shortcut functions like gt() for better results
     """
     def inner1(value):
         def inner2(data):
@@ -329,47 +364,54 @@ def comp(comp_fun):
         return inner2
     return inner1
 
-# Yes these look weird, but it's necessary (TODO?)
+# Comparison shortcut functions
 def lt(y):
     """
     lt :: a -> [a] -> [a]
+    Grab all values less than Y
     """
     return comp(lambda x: x < y)(y)
 
 def lte(y):
     """
     lte :: a -> [a] -> [a]
+    Grab all values less than or equal to Y
     """
     return comp(lambda x: x <= y)(y)
 
 def gt(y):
     """
     gt :: a -> [a] -> [a]
+    Grab all values greater than Y
     """
     return comp(lambda x: x > y)(y)
 
 def gte(y):
     """
     gte :: a -> [a] -> [a]
+    Grab all values greater than or equal to Y
     """
     return comp(lambda x: x >= y)(y)
 
 def equals(y):
     """
     equals :: a -> [a] -> [a]
+    Grab all values equal to Y
     """
     return comp(lambda x: x == y)(y)
 
 def nequals(y):
     """
     nequals :: a -> [a] -> [a]
+    Grab all values not equal to Y
     """
     return comp(lambda x: x != y)(y)
 
 # Zipping with Units
 def zip_with(zipper):
     """
-    zip_with :: [a] -> [b] -> [b]
+    zip_with :: [a] -> [b] -> [(a,b)]
+    Take two lists and zip them together to produce a pair-list
     """
     def izip(data):
         if isnt_type(Enum, data):
@@ -381,6 +423,9 @@ def zip_with(zipper):
 def reduce(func):
     """
     reduce :: Fold a => (a -> a -> a) -> [a] -> a
+    Reduce a list to binary operations and return the result
+    ie: Unit(10) | span | reduce(add) = sum(range(10))
+    see functools.reduce for more info
     """
     def ired(data):
         accum = None
@@ -399,7 +444,8 @@ def reduce(func):
 # Lists and strings both have + ops
 def concat(data):
     """
-    concat :: [[a]] -> [a]
+    concat :: Fold a => [[a]] -> [a]
+    Join a list of lists into a singular list
     """
     return reduce(add)(data)
 
@@ -411,6 +457,7 @@ def concat(data):
 def split(value):
     """
     split :: String a -> a -> a -> [a]
+    Split a string into a list of strings based on the seperator
     """
     def isplit(data):
         if isnt_type(String, value, data):
@@ -423,6 +470,7 @@ def split(value):
 def join(value=""):
     """
     join :: String a => a -> [a] -> a
+    Join together a list of strings by a seperator
     """
     def isplit(data):
         if isnt_type(String, value):
@@ -432,11 +480,13 @@ def join(value=""):
         return value.join(data)
     return isplit
 
+# The functions below might need os.linesep instead of '\n' if needed
 # lines function
 # Similar to GHC.lines
 def lines(data):
     """
     lines :: String a => a -> [a]
+    Break a string up into a list of strings separated by newline
     """
     return split('\n')(data)
 
@@ -446,6 +496,7 @@ def lines(data):
 def unlines(data):
     """
     unlines :: String a => [a] -> a
+    Join a list of strings back into a singular string
     """
     return join('\n')(data)
 
@@ -454,15 +505,16 @@ def unlines(data):
 def words(data):
     """
     words :: String a => a -> [a]
+    Cut a string into a list of words seperated by whitespace
     """
     return split(' ')(data)
-    
 
 # unwords function
 # Similar to GHC.unwords, inverse of words
 def unwords(data):
     """
     unwords :: String a => [a] -> a
+    Merge a list of strings into a singular string
     """
     return join(' ')(data)
 
