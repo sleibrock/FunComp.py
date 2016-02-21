@@ -72,6 +72,12 @@ class TestChains(unittest.TestCase):
         self.assertEqual(e, [7])
         self.assertEqual(f, [0, 1, 2, 3, 4, 5, 6, 7, 9])
 
+    def testTakeDrop(self):
+        a = Unit(10) | span | take(5) | True
+        b = Unit(10) | span | drop(5) | True
+        self.assertEqual(a, list(range(5)))
+        self.assertEqual(b, list(range(5,10)))
+
     def testReduce(self):
         a = Unit(1) | to(10) | reduce(add) | True
         b = Unit(1) | to(10) | reduce(mul) | True

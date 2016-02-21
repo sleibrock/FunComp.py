@@ -144,7 +144,7 @@ def drop(amount):
     def idrop(data):
         if not isinstance(data, list):
             return None
-        return data[x:]
+        return data[amount:]
     return idrop
 
 # Successor of a value (increment on Int)
