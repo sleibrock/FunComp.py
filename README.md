@@ -195,11 +195,11 @@ Unit(10) | span | lt(5)
 # => Unit([0,1,2,3,4])
 ```
 Other functions include:
-* lte
-* gt
-* gte
-* equals
-* nequals
+* _lte_
+* _gt_
+* _gte_
+* _equals_
+* _nequals_
 
 ### Take/Drop Elements from a List
 ``` python
