@@ -10,6 +10,11 @@ Included in this package:
     * Typeclass definition dictionary
     * Typechecking functions
     * Basic Prelude collection for Unit calculations
+
+Some rules:
+    * Don't use keyword argument functions
+    *
+
 """
 
 # Typeclass stuff
@@ -21,20 +26,45 @@ Included in this package:
 # Enum   - types that have positions or storage of some kind
 # Fold   - values that can gain or lose shape
 # String - supports only the string-type (strings != lists)
+# Func   - only supports callable types aka functions/methods
 # Any    - supports any type, literally
-Int, Num, Real, Ord, Enum, Fold, String, Any = range(8)
+Int, Num, Real, Ord, Enum, Fold, String, Func, Any = range(9)
 
 # TODO: does this system allow modularity/extendability non-builtins?
 typeclasses = {
-        Int    : (int, bool),
-        Num    : (int, float, complex),
-        Real   : (int, float),
-        Ord    : (int, float, complex, bool, str, list, bytes),
-        Enum   : (list, tuple, set, frozenset, dict, str),
-        Fold   : (int, float, complex, bool, list, tuple, str, bytes),
-        String : (str,),
-        Any    : (object,),
+    Int    : (int, bool),
+    Num    : (int, float, complex),
+    Real   : (int, float),
+    Ord    : (int, float, complex, bool, str, list, bytes),
+    Enum   : (list, tuple, set, frozenset, dict, str),
+    Fold   : (int, float, complex, bool, list, tuple, str, bytes),
+    String : (str,),
+    Func   : (type(lambda:None),),
+    Any    : (object,),
 }
+
+def typestr(tc):
+    """
+    typestr :: Int -> String
+    Return a string of the Typeclass' name to be used in reporting
+    """
+    return ["Int","Num","Real","Ord","Enum","Fold","String","Func","Any"][tc]
+
+def type_check(*types):
+    """
+    type_check :: [Int] -> Function -> [a] -> Function
+    A wrapper used to enforce type-checking at the wrapper instead of 
+    inside a function definition. Will raise TypeError when an argument does 
+    not match the declared Typeclasses given.
+    """
+    def decorator(func):
+        def type_checker(*args):
+            for t, v in zip(types, args):
+                if isnt_type(t, v):
+                    raise TypeError("{0} is not of type {1}".format(v, typestr(t)))
+            return func(*args)
+        return type_checker
+    return decorator
 
 def get_types(cls):
     """
